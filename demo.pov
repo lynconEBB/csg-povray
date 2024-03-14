@@ -1,15 +1,28 @@
 #version 3.7
 #include "colors.inc"  
 #include "shapes3.inc"  
+#include "shapes3.inc"
+#include "Round_Box_Y.inc"
 
 #include "textures.inc" 
 #include "stones.inc"
 
+#declare Cam2 = camera {
+  location  <-20.0, 5.0, 0>
+  look_at   <0.0, 0.0,  0.0>
+  angle 90
+}                               
+
+
+#declare Cam1 = camera {
+  location  <0.0, 5.0, -20.0>
+  look_at   <0.0, 0.0,  0.0>
+  angle 90
+}                               
 
 camera {
-  location  <0.0, 5.0, -10.0>
-  look_at   <0.0, 0.0,  0.0>
-}                               
+    Cam1
+}
 
 #declare BombGrayColor = <0.1,0.1,0.1> ;
    
@@ -103,48 +116,204 @@ union {
 
 
 //-------------------------------------------------------------------------
-#declare EggBody = ovus{ 2.50, 1.5 // base_radius, top_radius  with: top_radius< base_radius! 
-      texture{ pigment{ color rgb< 0.25, 0.25, 0.5>}  
-            // normal { bumps 0.75 scale 0.02 }
-               finish { phong 0.3 reflection { 0.00 metallic 0.00}  }
-             } // end of texture 
-      scale <1,1.2,1>
-      rotate<0,0,0>
-      translate<0,0.5,0> 
+
+#declare EggBody = object{ 
+    Egg_Shape( 0.2, 0.7  )
+    scale <1,3.5,1>
+    rotate <0,0,0>
+    translate< 0, 0, 0>
+}
+                                                                                                                                                                       
+#declare Shoe = difference {
+object{ 
+    Egg_Shape( 0.2, 0.5  )
+    scale <1,5,1> * 0.5
+    rotate <-90,0,0>
+    translate< 0, 0, 0>
+    pigment {
+        color <1,0,0.25>
+    } 
+}
+
+box {
+    <-1, -1, -1>, <1, 1, 1> // <x, y, z> near lower left corner, <x, y, z> far upper right corner
+    translate <0,-1,0>
+    scale <2,1,8>
+} 
+
+}
+                                                                                                                                                                       
+
+// ================== HEAD ======================================
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+declare Head = object{ Round_Box_Y ( <-1, -1, -1>, <1, 1, 1>, // <x, y, z> near lower left corner, <x, y, z> far upper right corner
+                      0.60, // Border_Radius_Big,  // big radius of vertical borders
+                      0.050, // Border_Radius_Small,// small radíus of horizontal borders
+                      1, 0 // Merge___On 
+                    ) 
+        texture {
+              pigment{ color White } 
+        } // end of texture      
+       scale<4,3,2.5>  rotate<90,0,0> translate<0,9,0>
+  }
+
+difference {
+    object {
+        Head
+    }
+    object {
+        Head
+        scale<0.8,0.8,1>
+        translate <0,1.7,-1>
+    }
+}
+
+intersection {
+    sphere { 
+        <0,0,0>, 1.25  
+        scale<1,0.5,0.5>
+         
+        texture { 
+            pigment{ color < 1, 0.80, 0.55>}
+        }
+        rotate<90,0,0>  translate<0,0,0>  scale<1,1,1> * 5
+    }  
+
+    object{ Round_Box_Y ( <-1, -1, -1>, <1, 1, 1>, // <x, y, z> near lower left corner, <x, y, z> far upper right corner
+                        0.60, // Border_Radius_Big,  // big radius of vertical borders
+                        0.050, // Border_Radius_Small,// small radíus of horizontal borders
+                        1, // Y_Filled___On,
+                        0 // Merge___On 
+                        ) //----------------------------------------
+            texture {
+                pigment{ color White } 
+            } 
+        scale<3.4,5,2.2>  rotate<90,0,0> translate<0,0,0>
+    }
+    pigment {
+        color < 1, 0.80, 0.55>
     }
 
-/* intersection {
-    
-    
+    translate <0,9.1,-0.2>
+}
+
+sphere {
+    <0, 0, 0>, 1 // <x, y, z>, radius
+    pigment { color Black }
+    scale <1,4,1> * 0.4
+    translate <1.5,9,-3>
+}
+sphere {
+    <0, 0, 0>, 1 // <x, y, z>, radius
+    pigment { color Black }
+    scale <1.2,4,1.2> * 0.4
+    translate <-1.5,9,-3>
+}
+
+#declare Cinto = intersection {
+    object { EggBody }
     box { 
         <-1.00, 0.00, -1.00>, < 1.00, 2.00, 1.00>
         scale <3,0.5,3> 
         rotate<0,0,0> 
-        translate<0,0,0>     
-        pigment {
-            color Black
-        }
+        translate<0,1.8,0>     
         
     } 
-    object { EggBody }
+    pigment {
+        color White
+    }
     scale <1.05,1,1.05>
 }
-object { EggBody } */
 
+union {
+merge {
+    object { 
+        EggBody 
+        pigment{ color  rgb< 0.25, 0.25, 0.5> }
+    } 
+    object { Cinto }
 
-//----------------------------------------------------------------------------
-#include "shapes3.inc"
-//----------------------------------------------------------------------------
-object{ Egg_Shape( 1.60, 0.65  ) // (Lower_Scale, Upper_Scale) 
-        texture{ pigment{ color rgb<1,1,1> }
-                 finish { phong 1 reflection{ 0.15 } }
-               } // end of texture
-         
-        scale <1,1.3,1>
-        rotate <180,0,0>
-        translate< 0, 0, 0>
-      } // end of object
-//----------------------------------------------------------------------------
- 
+}
+sphere_sweep {
+    linear_spline
+    2,
+    <0,0,0>, 0.5 
+    <7,0,0>, 0.5 
+    pigment { 
+        White
+    }
+    finish {
+        ambient 0.3
+    }
+    translate <0,5,0>
+}
 
+sphere_sweep {
+    linear_spline
+    2,
+    <0,0,0>, 0.5 
+    <-7,0,0>, 0.5 
+    pigment { 
+        White
+    }
+    finish {
+        ambient 0.3
+    }
+    translate <0,5,0>
+}
 
+sphere {
+    <0, 0, 0>, 1 // <x, y, z>, radius
+    translate <7,5,0> 
+    pigment {
+        color <1,0,0.25>
+    }
+}
+
+sphere {
+    <0, 0, 0>, 1 // <x, y, z>, radius
+    translate <-7,5,0> 
+    pigment {
+        color <1,0,0.25>
+    }
+}      
+
+sphere_sweep {
+    linear_spline
+    2,
+    <-0.5,-2,0>, 0.5 
+    <-2,-10,0>, 0.5 
+    pigment { 
+        White
+    }
+    finish {
+        ambient 0.3
+    }
+    translate <0,5,0>
+}
+   
+sphere_sweep {
+    linear_spline
+    2,
+    <0.5,-2,0>, 0.5 
+    <2,-10,0>, 0.5 
+    pigment { 
+        White
+    }
+    finish {
+        ambient 0.3
+    }
+    translate <0,5,0>
+}
+object {
+    Shoe
+    translate <2,-6,1>
+}
+object {
+    Shoe
+    translate <-2,-6,1>
+}
+translate <0,0,0>
+
+} 
