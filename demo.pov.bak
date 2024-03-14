@@ -32,6 +32,7 @@ plane {
     pigment { color BombGrayColor }
     finish {
         ambient 0.2
+        phong 0.1
     } 
     translate <0,0,0>
 }
@@ -54,8 +55,7 @@ plane {
 #declare Bomb = merge {
   object { Cap }
   object { BombBody }
-  translate <0,-2,0> 
-  finish { phong 0.5 }
+  translate <0,-2,0>
 } 
 
 
@@ -91,7 +91,7 @@ union {
         BombWick
         scale <1,1,1> * 0.3
         translate <-0.1,1,0>
-    }  
+    }   
 }
   
 
