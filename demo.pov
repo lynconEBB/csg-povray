@@ -13,11 +13,10 @@
 }                               
 
 #declare Cam2 = camera {
-  location  <-20.0, 20.0, -20>
+  location  <-20.0, 5.0, -20>
   look_at   <0.0, 0.0,  0.0>
   angle 90
 }                               
-
 
 camera {
     Cam1
@@ -507,96 +506,240 @@ union {
         translate <0,0,-10>
     }
 }
+
 // ================== Skull ===========================
 
-#declare Skulli = difference {
-ovus {
-    1, 1 // base_radius, top_radius (top_radius < base_radius)
-    pigment {
-        color White
-    }
-    rotate <0,0,90>
-    scale <1,1.2,1> * 3
-}
-ovus {
-    1, 1
-    translate < 0,0,-2> 
-    scale <1,1,1.2>
-    rotate <0,0,0>
-    pigment { 
-        color Black
-    }
-}
-ovus {
-    1, 1
-    translate < -3,0,-2> 
-    scale <1,1,1.2>
-    rotate <0,0,0>
-    pigment { 
-        color Black
-    }
-}
-sphere {
-    <0, 0, 0>, 0.5 // <x, y, z>, radius
-    translate <-1.5,-0.5,-3> 
-}
-}
-
-/* sphere {
-    <0, 0, 0>, 0.2 // <x, y, z>, radius
-    translate <0,1,-2> 
-    pigment {
-        color Red
-    }
-    finish {ambient 4}
-}
-
-
-sphere {
-    <0, 0, 0>, 0.2 // <x, y, z>, radius
-    translate <-3,1,-2> 
-    pigment {
-        color Red
-    }
-    finish {ambient 4}
-} */
-
-#declare Skull =  merge {
-
-object {
-    Skulli
-}
-
-object{ // Round_Box(A, B, WireRadius, UseMerge)
-        Round_Box(<0,0,0>,<-1,-1,-1>, 0.25 , 0)  
-         
-        texture{ pigment{ color White}
+#declare Skull = difference {
+    ovus {
+        1, 1 // base_radius, top_radius (top_radius < base_radius)
+        pigment {
+            color White
         }
-        scale<1.5,3,2>  
-        rotate<0, 0,0> 
-        translate<-2.5,-1.5,-1.5>
-      } 
-
-object{ // Round_Box(A, B, WireRadius, UseMerge)
-        Round_Box(<0,0,0>,<-1,-1,-1>, 0.25 , 0)  
-         
-        texture{ pigment{ color White}
+        rotate <0,0,90>
+        scale <1,1.8,1.5> * 3
+        finish {ambient 0.4}
+    }
+    box {
+        <-1, -1, -1>, <1, 1, 1> // <x, y, z> near lower left corner, <x, y, z> far upper right corner
+        scale <2,1.5,2> * 3 
+        translate <0,-5,3>
+        pigment {
+            color White
         }
-        scale<1.5,3,2>  
-        rotate<0, 0,0> 
-        translate<-0.8,-1.5,-1.5>
-      } 
-
-object{ // Round_Box(A, B, WireRadius, UseMerge)
-        Round_Box(<0,0,0>,<-1,-1,-1>, 0.25 , 0)  
-         
-        texture{ pigment{ color White}
+    }
+    box {
+        <-1, -1, -1>, <1, 1, 1> // <x, y, z> near lower left corner, <x, y, z> far upper right corner
+        scale <4,2,2>  
+        translate <-1,-4.2,-3>
+        pigment {
+            color White
         }
-        scale<1.5,3,2>  
+    }
+    object{ // Round_Box(A, B, WireRadius, UseMerge)
+        Round_Box(<-1,-1,-1>,<1,1,1>, 0.5 , 0)  
+         
+        scale<1.5,3,3>  
         rotate<0, 0,0> 
-        translate<0.8,-1.5,-1.5>
+        translate<2.5,-3.5,-2.5>
+        pigment {
+            color White
+        }
       } 
+    object{ // Round_Box(A, B, WireRadius, UseMerge)
+        Round_Box(<-1,-1,-1>,<1,1,1>, 0.5 , 0)  
+         
+        scale<1.5,3,3>  
+        rotate<0, 0,0> 
+        translate<-5,-3.5,-2.5>
+        pigment {
+            color White
+        }
+      } 
+    object{//Round_Cone( point A, radius A, point B, radius B, rounding radius, merge on) 
+         Round_Cone( <0,0,0>, 0.50    , <0,1.20,0>, 0.20 , 0.15, 0)  
+         
+         scale<0.3,2,4>  * 2
+         rotate<0,0,0> 
+         translate<0,-5.2,-3.5>
+       } 
+
+    object{//Round_Cone( point A, radius A, point B, radius B, rounding radius, merge on) 
+         Round_Cone( <0,0,0>, 0.50    , <0,1.20,0>, 0.20 , 0.15, 0)  
+         
+         scale<0.3,2,4>  * 2
+         rotate<0,0,0> 
+         translate<-1.2,-5.2,-3.5>
+       } 
+
+    object{//Round_Cone( point A, radius A, point B, radius B, rounding radius, merge on) 
+         Round_Cone( <0,0,0>, 0.50    , <0,1.20,0>, 0.20 , 0.15, 0)  
+         
+         scale<0.3,2,4>  * 2
+         rotate<0,0,0> 
+         translate<-2.4,-5.2,-3.5>
+       } 
+
+    ovus {
+        1, 1
+        translate < 0,1.5,-3> 
+        scale <1,1,1.2> *1.2 
+        rotate <0,0,0>
+        pigment { 
+            color Black
+        }
+    }
+    ovus {
+        1, 1
+        translate < -3,1.5,-3> 
+        scale <1,1,1.2> *1.2 
+        rotate <0,0,0>
+        pigment { 
+            color Black
+        }
+    }
+    sphere {
+        <0, 0, 0>, 0.4 
+        scale <1,1,5>
+        translate <-1.8,1,-4.6> 
+    }
 }
-/* object {
-    ItemBase
-} */
+
+#declare DebuffBase = difference {
+    box {
+        <-1, -1, -1>, <1, 1, 1>
+        pigment {
+            color Red
+        }
+        scale <5,0.5,5>
+    }
+    box {
+        <-1, -1, -1>, <1, 1, 1>
+        pigment {
+            color Orange
+        }
+        scale <4.5,1,4.5>
+        translate <0, 1,0>
+    }
+}
+
+#declare DebuffItem = union {
+    object {
+        Skull
+        scale <1,1,1> * 0.8
+        translate <1,3,0>
+    }
+    sphere {
+        <0, 0, 0>, 0.2 // <x, y, z>, radius
+        translate <1,5,-2.5> 
+        pigment {
+            color Red
+        }
+        finish {ambient 4}
+    } 
+    sphere {
+        <0, 0, 0>, 0.2 // <x, y, z>, radius
+        translate <-1.5,5,-2.5> 
+        pigment {
+            color Red
+        }
+        finish {ambient 4}
+    } 
+    object {
+        DebuffBase
+    }
+}
+
+// ==================================== Mount ============================================
+
+#declare Smile = difference {
+    box {
+        <-1, -1, -1>, <1, 1, 1> // <x, y, z> near lower left corner, <x, y, z> far upper right corner
+        rotate <0,0,45> 
+        pigment {
+            color Black
+        }
+        scale <3,3.5,3>
+    }
+
+    cylinder {
+        <0, 0, 5>, <0, 0, -4>, 4.8
+        scale <1.1,1,1>
+        translate <0,3.5,0>
+        pigment {
+            color Black
+        }
+    }
+}
+#declare MountBody = difference {
+    object {//Round_Cone3( point A, radius A, point B, radius B, merge on) 
+        Round_Cone3( <0,0,0>, 0.30, <0,0.8,0>, 0.80 , 0 )  
+        pigment{ color Cyan } 
+        scale<1,1,1> * 5  
+        rotate<0,0,0> 
+        translate<0,0.0,0>
+    }
+    object {
+        Smile
+        scale <0.9,0.8,1> * 0.6
+        translate <0,5,-3>
+    }
+}
+
+#declare Eye = merge {
+    sphere {
+        <0, 0, 0>, 1 // <x, y, z>, radius
+        pigment { color < 0.5, 0.0, 1.0> } 
+        scale <1.2,0.5,1>
+    }
+
+    sphere {
+        <0, 0, 0>, 1 // <x, y, z>, radius
+        pigment { color < 0.5, 0.0, 1.0> } 
+        scale <1.2,0.5,1>
+        rotate <0,0,90>
+    }
+}
+
+#declare Mount = union {
+    object {
+        MountBody
+    }
+    object {
+        Eye
+        translate <1.5,7,-4>
+    }
+    object {
+        Eye
+        translate <-1.5,7,-4>
+    }
+    object{ // Round_Box(A, B, WireRadius, UseMerge)
+        Round_Box(<-1,-1,-1>,<1,1,1>, 0.5 , 0)  
+            
+        scale<0.7,1.8,0.5>  
+        rotate<-45,0,0> 
+        translate<0,3,-2>
+        pigment {
+            color White
+        }
+    } 
+    object{ // Round_Box(A, B, WireRadius, UseMerge)
+        Round_Box(<-1,-1,-1>,<1,1,1>, 0.5 , 0)  
+            
+        scale<0.7,1.8,0.5>  
+        rotate<-40,0,0> 
+        translate<-1.55,4,-2>
+        pigment {
+            color White
+        }
+    } 
+    object{ // Round_Box(A, B, WireRadius, UseMerge)
+        Round_Box(<-1,-1,-1>,<1,1,1>, 0.5 , 0)  
+            
+        scale<0.7,1.8,0.5>  
+        rotate<-40,0,0> 
+        translate<1.55,4,-2>
+        pigment {
+            color White
+        }
+    } 
+}
