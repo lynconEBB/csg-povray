@@ -4,34 +4,47 @@
 #include "shapes3.inc"
 #include "Round_Box_Y.inc"
 #include "textures.inc" 
+#include "skies.inc"
 #include "stones.inc"
 
-#declare Cam1 = camera {
-  location  <0.0, 5.0, -20.0>
-  look_at   <0.0, 0.0,  0.0>
-  angle 90
-}                               
+#declare Camera_0 = camera {perspective angle 90               // front view
+                            location  <-10.0 , 10.0 ,-10.0>
+                            right     x*image_width/image_height
+                            look_at   <0.0 , 0.0 , 0.0>}
+#declare Camera_1 = camera {/*ultra_wide_angle*/ angle 90   // diagonal view
+                            location  <-0 ,20 ,0.0>
+                            right     x*image_width/image_height
+                            look_at   <0.0 , 0.0 , 0.0>}
+#declare Camera_2 = camera {/*ultra_wide_angle*/ angle 90   // diagonal view
+                            location  <-0 ,20 ,-20.0>
+                            right     x*image_width/image_height
+                            look_at   <0.0 , 0.0 , 0.0>}
+#declare Camera_3 = camera {/*ultra_wide_angle*/ angle 90        // top view
+                            location  <-10.0 , 10.0 ,10.0>
+                            right     x*image_width/image_height
+                            look_at   <0.0 , 0.0 , 0.0>}
 
-#declare Cam2 = camera {
-  location  <-20.0, 5.0, -20>
-  look_at   <0.0, 0.0,  0.0>
-  angle 90
-}                               
+#declare Camera_4 = camera {/*ultra_wide_angle*/ angle 90        // top view
+                            location  <10 , 8.0 ,-5>
+                            right     x*image_width/image_height
+                            look_at   <-5.0 , -5.0 , 10.0>}
 
+#declare Camera_7 = camera {/*ultra_wide_angle*/ angle 90   // diagonal view
+                            location  <-0 ,10 ,-30.0>
+                            right     x*image_width/image_height
+                            look_at   <0.0 , 0.0 , 0.0>}
 camera {
-    Cam1
+    Camera_0
 }
 
+light_source{<500,2500,-500> color White}
+
+sky_sphere { 
+    S_Cloud2
+} 
+
+
 #declare BombGrayColor = <0.1,0.1,0.1> ;
-   
-background { color red 0.078 green 0.361 blue 0.753 }
-        
-light_source {  
-    <10, 10, -30> 
-    color White
-    parallel
-    point_at <1, 0, 0> 
-}   
    
 
 // ============================= Bomb ========================================
@@ -99,12 +112,39 @@ light_source {
 
 
 // ======================== Character ================================
-/*
-#declare EggBody = object{ 
+declare HeadRoundBox = object{ 
+    Round_Box_Y ( <-1, -1, -1>, <1, 1, 1>, // <x, y, z> near lower left corner, <x, y, z> far upper right corner
+                0.60, // Border_Radius_Big,  // big radius of vertical borders
+                0.050, // Border_Radius_Small,// small radíus of horizontal borders
+                1, 0 // Merge___On 
+    ) 
+    texture {
+            pigment{ color White } 
+    }
+    scale<4,3,2.5>  rotate<90,0,0> translate<0,9,0>
+}
+
+#declare Chest = object{ 
     Egg_Shape( 0.2, 0.7  )
     scale <1,3.5,1>
     rotate <0,0,0>
     translate< 0, 0, 0>
+}
+
+#declare Belt = intersection {
+    object { Chest }
+    box { 
+        <-1.00, 0.00, -1.00>, < 1.00, 2.00, 1.00>
+        scale <3,0.5,3> 
+        rotate<0,0,0> 
+        translate<0,1.8,0>     
+        
+    } 
+
+    pigment {
+        color White
+    }
+    scale <1.05,1,1.05>
 }
                                                                                                                                                                        
 #declare Shoe = difference {
@@ -125,30 +165,16 @@ light_source {
     } 
 }
                                                                                                                                                                        
-
-// ================== HEAD ======================================
-
-declare Head = object{ Round_Box_Y ( <-1, -1, -1>, <1, 1, 1>, // <x, y, z> near lower left corner, <x, y, z> far upper right corner
-                      0.60, // Border_Radius_Big,  // big radius of vertical borders
-                      0.050, // Border_Radius_Small,// small radíus of horizontal borders
-                      1, 0 // Merge___On 
-                    ) 
-        texture {
-              pigment{ color White } 
-        }
-       scale<4,3,2.5>  rotate<90,0,0> translate<0,9,0>
-}
-
-difference {
+#declare BeltDetail = difference {
     object { 
-        Head 
+        HeadRoundBox
         pigment {
             color < 1.0, 0.65, 0.0>
         }
     }
     
     object {
-        Head
+        HeadRoundBox
         scale<0.6,0.6,2> 
         translate <0,3.5,0>
         pigment {
@@ -159,18 +185,19 @@ difference {
     translate <0,0.2,-2.3>
 }
 
-difference {
+
+#declare Hood = difference {
     object {
-        Head
+        HeadRoundBox
     }
     object {
-        Head
+        HeadRoundBox
         scale<0.8,0.8,1>
         translate <0,1.7,-1>
     }
 }
 
-intersection {
+#declare Face = intersection {
     sphere { 
         <0,0,0>, 1.25  
         scale<1,0.5,0.5>
@@ -199,120 +226,29 @@ intersection {
     translate <0,9.1,-0.2>
 }
 
-sphere {
+#declare BomberEye = sphere {
     <0, 0, 0>, 1 // <x, y, z>, radius
     pigment { color Black }
     scale <1,4.7,1> * 0.4
     translate <1.5,9,-3>
 }
-sphere {
-    <0, 0, 0>, 1 // <x, y, z>, radius
-    pigment { color Black }
-    scale <1.2,4.7,1.2> * 0.4
-    translate <-1.5,9,-3>
-}
 
-#declare Cinto = intersection {
-    object { EggBody }
-    box { 
-        <-1.00, 0.00, -1.00>, < 1.00, 2.00, 1.00>
-        scale <3,0.5,3> 
-        rotate<0,0,0> 
-        translate<0,1.8,0>     
-        
-    } 
-    pigment {
-        color White
-    }
-    scale <1.05,1,1.05>
-}
-
-union {
-    merge {
-        object { 
-            EggBody 
-            pigment{ color  rgb< 0.25, 0.25, 0.5> }
-        } 
-        object { Cinto }
-    }
-    sphere_sweep {
-        linear_spline
-        2,
-        <0,0,0>, 0.5 
-        <7,0,0>, 0.5 
-        pigment { 
-            White
-        }
-        finish {
-            ambient 0.3
-        }
-        translate <0,5,0>
-    }
-
-    sphere_sweep {
-        linear_spline
-        2,
-        <0,0,0>, 0.5 
-        <-7,0,0>, 0.5 
-        pigment { 
-            White
-        }
-        finish {
-            ambient 0.3
-        }
-        translate <0,5,0>
-    }
-
-    sphere {
-        <0, 0, 0>, 1 // <x, y, z>, radius
-        translate <7,5,0> 
-        pigment {
-            color <1,0,0.25>
-        }
-    }
-
-    sphere {
-        <0, 0, 0>, 1 // <x, y, z>, radius
-        translate <-7,5,0> 
-        pigment {
-            color <1,0,0.25>
-        }
-    }      
-
-    sphere_sweep {
-        linear_spline
-        2,
-        <-0.5,-2,0>, 0.5 
-        <-2,-10,0>, 0.5 
-        pigment { 
-            White
-        }
-        finish {
-            ambient 0.3
-        }
-        translate <0,5,0>
-    }
-    
-    sphere_sweep {
-        linear_spline
-        2,
-        <0.5,-2,0>, 0.5 
-        <2,-10,0>, 0.5 
-        pigment { 
-            White
-        }
-        finish {
-            ambient 0.3
-        }
-        translate <0,5,0>
-    }
+#declare Head = merge {
     object {
-        Shoe
-        translate <2,-6,1>
+        Hood
     }
+
     object {
-        Shoe
-        translate <-2,-6,1>
+        Face
+    }
+
+    object {
+        BomberEye
+    }
+
+    object {
+        BomberEye
+        translate <-3,0,0>
     }
 
     sphere_sweep {
@@ -353,12 +289,109 @@ union {
         translate <4,13.4,-5>
         scale <-1,1,1> * 0.8
     }
+}
 
+#declare Bomberman = merge {
+    merge {
+        object { 
+            Chest 
+            pigment{ color  rgb< 0.25, 0.25, 0.5> }
+        } 
+        object { Belt }
+        object { BeltDetail }
+    }
+    // Arm
+    sphere_sweep {
+        b_spline
+        4,
+        <-5,0,0>, 0.5 
+        <0,0,0>, 0.5 
+        <7,4,0>, 0.5 
+        <7,20,0>, 0.5 
+        pigment { 
+            White
+        }
+        finish {
+            ambient 0.3
+        }
+        translate <0,4,0>
+    }
+    // Hand
+    sphere {
+        <0, 0, 0>, 1 // <x, y, z>, radius
+        translate <6,10,0> 
+        pigment {
+            color <1,0,0.25>
+        }
+    }
+
+    // Arm
+    sphere_sweep {
+        b_spline
+        4,
+        <0,0,0>, 0.5 
+        <0,0,0>, 0.5 
+        <-7,-4,0>, 0.5 
+        <0,-5,0>, 0.5 
+        pigment { 
+            White
+        }
+        finish {
+            ambient 0.3
+        }
+        translate <0,6,0>
+    }
+    // Hand
+    sphere {
+        <0, 0, 0>, 1 // <x, y, z>, radius
+        translate <-5,2,0> 
+        pigment {
+            color <1,0,0.25>
+        }
+    }      
+    //Leg
+    sphere_sweep {
+        linear_spline
+        2,
+        <-0.5,-2,0>, 0.5 
+        <-2,-10,0>, 0.5 
+        pigment { 
+            White
+        }
+        finish {
+            ambient 0.3
+        }
+        translate <0,5,0>
+    }
+    
+    sphere_sweep {
+        linear_spline
+        2,
+        <0.5,-2,0>, 0.5 
+        <2,-10,0>, 0.5 
+        pigment { 
+            White
+        }
+        finish {
+            ambient 0.3
+        }
+        translate <0,5,0>
+    }
+    object {
+        Shoe
+        translate <2,-6,1>
+    }
+    object {
+        Shoe
+        translate <-2,-6,1>
+    }
+
+    object {
+        Head
+    }
 
     translate <0,0,0>
-
 } 
-*/
 
 // ======================= Roller item ==================
 
@@ -743,3 +776,187 @@ union {
         }
     } 
 }
+
+// ==================== Scene ==============================
+#declare Scene = union {
+    box {
+        <-1, -1, -1>, <1, 1, 1> // <x, y, z> near lower left corner, <x, y, z> far upper right corner
+        texture{ 
+            pigment{ color rgb<0.35,0.65,0.0>*0.9 }
+            normal { bumps 0.75 scale 0.015 }
+            finish { phong 0.1 }
+        } // end of texture
+        translate < 0.1,0,0>
+        scale <10.5,0.1,10> 
+    }
+
+    #declare Voxel = object {
+        Round_Box(<-1,-1,-1>,<1,1,1>, 0.25 , 0)  
+        scale<1,1,1>  rotate<0, 0,0> translate<0,1,0>
+    }
+    #declare WallTile = object {
+        Voxel
+        pigment {
+            color <1,1,1> * 0.2
+        }
+    }
+
+    union { 
+        #local Nr = 0;     // start
+        #local EndNr = 11; // end
+        #while (Nr< EndNr) 
+
+        object{ WallTile translate<Nr*2,0,0>} 
+
+        #local Nr = Nr + 1;  // next Nr
+        #end // --------------- end of loop 
+
+        rotate<0,0,0> 
+        translate<-9,0,-9>
+    } 
+
+    union { 
+        #local Nr = 0;     // start
+        #local EndNr = 11; // end
+        #while (Nr< EndNr) 
+
+        object{ WallTile translate<Nr*2,0,0>} 
+
+        #local Nr = Nr + 1;  // next Nr
+        #end // --------------- end of loop 
+
+        rotate<0,0,0> 
+        translate<-9,0,9>
+    } 
+
+    union { 
+        #local Nr = 0;     // start
+        #local EndNr = 8; // end
+        #while (Nr< EndNr) 
+
+        object{ WallTile translate <0,0,Nr*2> } 
+
+        #local Nr = Nr + 1;  // next Nr
+        #end // --------------- end of loop 
+
+        rotate<0,0,0> 
+        translate<-9,0,-7>
+    } 
+
+    union { 
+        #local Nr = 0;     // start
+        #local EndNr = 8; // end
+        #while (Nr< EndNr) 
+
+        object{ WallTile translate <0,0,Nr*2> } 
+
+        #local Nr = Nr + 1;  // next Nr
+        #end // --------------- end of loop 
+
+        rotate<0,0,0> 
+        translate<11,0,-7>
+    } 
+
+    union { 
+        #local Nr = 0;     // start
+        #local EndNr = 4; // end
+        #while (Nr< EndNr) 
+
+        object{ WallTile translate<Nr*4,0,0>} 
+
+        #local Nr = Nr + 1;  // next Nr
+        #end // --------------- end of loop 
+
+        rotate<0,0,0> 
+        translate<-5,0,-2>
+    } 
+
+    union { 
+        #local Nr = 0;     // start
+        #local EndNr = 4; // end
+        #while (Nr< EndNr) 
+
+        object{ WallTile translate<Nr*4,0,0>} 
+
+        #local Nr = Nr + 1;  // next Nr
+        #end // --------------- end of loop 
+
+        rotate<0,0,0> 
+        translate<-5,0,-6>
+    } 
+
+    union { 
+        #local Nr = 0;     // start
+        #local EndNr = 4; // end
+        #while (Nr< EndNr) 
+
+        object{ WallTile translate<Nr*4,0,0>} 
+
+        #local Nr = Nr + 1;  // next Nr
+        #end // --------------- end of loop 
+
+        rotate<0,0,0> 
+        translate<-5,0,2>
+    } 
+
+    union { 
+        #local Nr = 0;     // start
+        #local EndNr = 4; // end
+        #while (Nr< EndNr) 
+
+        object{ WallTile translate<Nr*4,0,0>} 
+
+        #local Nr = Nr + 1;  // next Nr
+        #end // --------------- end of loop 
+
+        rotate<0,0,0> 
+        translate<-5,0,6>
+    } 
+    object {
+        Bomb
+        scale <1,1,1> * 0.5
+        translate <-8,-2.2,0>
+    }
+
+    object {
+        DebuffItem
+        scale <0.9,1,0.9> * 0.22
+        translate <5,0.1,4>
+    }
+
+    object {
+        DebuffItem
+        scale <0.9,1,0.9> * 0.22
+        translate <-7,0.1,-4>
+    }
+
+    object {
+        RollerItem
+        scale <1,1,1> * 0.21
+        translate <-7,0.1,2.2>
+    }
+
+    object {
+        Mount
+        scale <0.8,1,0.8> * 0.35
+        rotate <0,90,0>
+        translate <5,0.5,-3.5>
+    }
+
+    object {
+        Bomberman
+        scale <1,1,1> * 0.28
+        translate <1,1.8,6>
+    }
+
+    object {
+        Bomb
+        scale <1,1,1> * 0.5
+        translate <-2.2,2.2,6>
+    }
+}
+
+object {
+    Scene
+} 
+    
